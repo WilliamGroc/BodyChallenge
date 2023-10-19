@@ -1,7 +1,10 @@
+import Link from "next/link";
+import Button from "./_components/button";
+
 export default function Home() {
   return <main>
     <section>
-      Bonjour
+      <Link href="/exercice/create"><Button>Create exercice</Button></Link>
     </section>
   </main>
 }

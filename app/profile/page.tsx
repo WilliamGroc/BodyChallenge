@@ -1,9 +1,9 @@
-import Form from "./form";
+import FormProfile from "./form";
 import { prisma } from '@/app/_lib/prisma';
 import { getSession } from "../_lib/auth";
+import { Suspense, cache } from "react";
 
-
-async function getData() {
+const getData = cache(async () => {
   const session = await getSession();
 
   if (session?.user) {
@@ -15,23 +15,22 @@ async function getData() {
         id: true,
         firstname: true,
         lastname: true,
+        physicalStat: true,
       }
     })
 
     return profile;
   }
   return null;
-}
+})
 
 
 export default async function Profile() {
   const initialValues = await getData();
 
   return <section className="flex justify-center">
-    <Form initialData={{
-      ...initialValues,
-      firstname: initialValues?.firstname || '',
-      lastname: initialValues?.lastname || '',
-    }} />
+    <Suspense fallback={<div>Loading...</div>}>
+      <FormProfile initialData={initialValues} />
+    </Suspense>
   </section>
 }

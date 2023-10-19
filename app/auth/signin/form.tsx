@@ -19,7 +19,6 @@ export default function FormSignin() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
-
       e.preventDefault();
       const res = await signIn("credentials", {
         redirect: false,

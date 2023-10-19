@@ -10,3 +10,7 @@
 body {
   color: rgb(var(--foreground-rgb));
 }
+
+main {
+  padding: 16px;
+}
