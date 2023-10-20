@@ -42,6 +42,7 @@ model ExerciseSet {
   id            String    @id @default(cuid())
   weight        Float?
   reps          Int?
+  time          Int?
   date          DateTime?
   exercise      Exercise  @relation(fields: [exerciseId], references: [id])
   exerciseId    String

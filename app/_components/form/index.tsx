@@ -5,12 +5,14 @@ import styles from "./styles.module.css";
 type Props = DetailedHTMLProps<FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
   children: any,
   setLoading?: (val: boolean) => void;
+  onSubmitted?: (data: any) => void;
 }
 
-export default function Form({ children, setLoading, ...props }: Props) {
+export default function Form({ children, onSubmitted, setLoading, ...props }: Props) {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     setLoading?.(true);
     event.preventDefault();
+
     const form = event.currentTarget;
     const formData = new FormData(form);
     const response = await fetch(form.action, {
@@ -18,18 +20,21 @@ export default function Form({ children, setLoading, ...props }: Props) {
       body: formData
     });
 
-    try {
-      const data = await response.json();
-      setLoading?.(false);
-
-      return data;
-    } catch (e) {
+    if (response.status >= 400)
+      onSubmitted?.(new Error(await response.text()));
+    else {
+      try {
+        const data = await response.json();
+        onSubmitted?.(data);
+      } catch (e) {
+      }
+      onSubmitted?.(null);
     }
 
     setLoading?.(false);
   }
 
-  return <form onSubmit={handleSubmit} className={`flex flex-col w-1/3 ${styles.form}`} {...props} >
+  return <form onSubmit={handleSubmit} className={`flex flex-col w-full ${styles.form}`} {...props} >
     {children}
   </form>
 }
