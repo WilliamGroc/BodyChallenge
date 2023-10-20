@@ -26,3 +26,25 @@ export async function POST(req: Request, { params }: { params: { id: string } })
 
   return new Response('Not authenticated', { status: 401 });
 }
+
+export async function DELETE(_: Request, { params: { id } }: { params: { id: string } }) {
+  const session = await getSession();
+
+  if (session?.user) {
+    await prisma.exerciseSet.deleteMany({
+      where: {
+        exerciseId: id
+      },
+    });
+
+    await prisma.exercise.delete({
+      where: {
+        id,
+      }
+    });
+
+    return new Response('ok');
+  }
+
+  return new Response('Not authenticated', { status: 401 });
+}
